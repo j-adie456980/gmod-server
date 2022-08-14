@@ -1,0 +1,13 @@
+"deathmatch"
+{
+	"base"		"base"
+	"title"		"Team Deathmatch"
+	"maps"		"ttt"
+	"menusystem"	"1"
+	"workshopid"	"359013863"
+	
+	"settings"
+	{
+	}
+
+}
