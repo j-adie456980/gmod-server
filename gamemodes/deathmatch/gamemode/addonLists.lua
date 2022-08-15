@@ -143,13 +143,19 @@ currentMelee = weaponList.MELEE[1]
 function SetCurrentLoadOut(Player, primary, secondary, melee)
     Player:RemoveAllItems()
     if (primary == nil) then Player:Give(currentPrimary)
-    else Player:Give(primary)
+    else 
+        Player:Give(primary)
+        currentPrimary = primary
     end
     if (secondary == nil) then Player:Give(currentSecondary)
-    else Player:Give(secondary)
+    else 
+        Player:Give(secondary)
+        currentSecondary = secondary
     end
     if (melee == nil) then Player:Give(currentMelee)
-    else Player:Give(melee)
+    else 
+        Player:Give(melee)
+        currentMelee = melee
     end
     --Player:Give(currentMelee)
     Player:Give("weapon_frag")

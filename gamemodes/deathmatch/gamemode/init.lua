@@ -21,8 +21,6 @@ resource.AddFile(t_sound)
 resource.AddFile(n_sound)
 resource.AddFile(f_sound)
 
-local firstspawn = true
-
 local first = true
 
 local thirdperson = false
@@ -37,18 +35,24 @@ hook.Add( "KeyPress", "keypress_use_hi", function( ply, key )
 	end
 end )
 
+function GM:PlayerInitialSpawn( ply )
+	ply:KillSilent()
+	ply:GodEnable()
+	ply:Freeze(true)
+	ply:Spectate( OBS_MODE_ROAMING )
+   	ply:SpectateEntity( ent )
+	umsg.Start("SelectTeamMenu")
+	umsg.End()
+end
+
 function GM:PlayerSpawn( ply )
-	
+
 	ply:Freeze(false)
 	
 	ply:AllowFlashlight(true)
 	
-	if firstspawn == true then
-		firstspawn = false
-		ply:SetTeam(4)
-		ply:KillSilent()
-	end
-	
+	print(ply:Team())
+
 	if ply:Team() == 4 then
 		ply:GodEnable()
 		ply:Freeze(true)
@@ -85,7 +89,7 @@ function GM:PlayerSpawn( ply )
 	umsg.End()
 	if ply:Team() ~= 3 then
 	if ply:Team() ~= 4 then
-	if allowbuy == true then
+	if allowbuy == false then
 	umsg.Start("open", ply )
 	umsg.End()
 	end
@@ -126,9 +130,6 @@ end
 function buy()
 umsg.Start("open", ply)
 umsg.End()
-end
-
-function GM:PlayerInitialSpawn( ply )
 end
 
 function GM:PlayerDeath( victim, inflictor, attacker )
