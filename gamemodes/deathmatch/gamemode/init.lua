@@ -59,7 +59,7 @@ function GM:PlayerSpawn( ply )
 		ply:Freeze(true)
 		ply:Spectate( OBS_MODE_ROAMING )
    	 	ply:SpectateEntity( ent )
-		umsg.Start("SelectTeamMenu")
+		umsg.Start("SelectTeamMenu", ply)
 		umsg.End()
 	else
 	if ply:Team() == 3 then
