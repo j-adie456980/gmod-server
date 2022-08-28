@@ -21,7 +21,6 @@ function drawWeaponModel(parent, wep)
 		WeaponModel:SetCamPos(Vector(0, 70, 0))
 		WeaponModel:SetLookAt(Vector( 0, 0, 0 ))
 		WeaponModel:SetFOV(50)
-		--print(WeaponModel:GetLookAt())
 end
 
 function sendClientData()
@@ -34,7 +33,6 @@ end
 function SelectWeaponMenu()
 	local ply = LocalPlayer() -- LocalPlayer exist within a function that is in context of player (probably from the hooks idk why this is)
 	print("--- SELECT WEAPON MENU ---", ply)
-	PrintTable(player_manager.AllValidModels())
 
 	local currentPrimaryType = getPrimaryType()
 	local currentWeaponType = "primary"
@@ -237,7 +235,5 @@ function SelectWeaponMenu()
 			surface.DrawRect( 0, 0, w, h )
 			draw.SimpleText( "Melee", "ScoreboardDefaultTitle", w/2, h/2, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 		end
-	
-	dumbShit()
 end
 usermessage.Hook("SelectWeaponMenu", SelectWeaponMenu)

@@ -102,7 +102,6 @@ end
 function GM:ShowHelp( ply )
 	--PrintTable(team.GetClass(1))
 	--print(ply)
-	print(team_name_1, team_name_2)
 end
 
 function GM:ShowSpare2( ply )

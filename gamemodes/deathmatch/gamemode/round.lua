@@ -75,44 +75,40 @@ function round.Handle()
 		return
 	end
 	
-	if(round.Break == 0) then -- Rundenpause zuende
-			ende = false
-			r:SetVisible(false)
-			round.sec = round_sec
-			round.TimeLeft = round_min
-			round.Break = round_break
-			
-			net.Start( "z" )
-				net.WriteString( "respawn" )
-			net.SendToServer()
-			
-			if round.limit == 0 then
-				round.limit = rounds
-			else
-				round.limit = round.limit - 1
-			end
+	if (round.Break == 0) then -- Rundenpause zuende
+		ende = false
+		r:SetVisible(false)
+		round.sec = round_sec
+		round.TimeLeft = round_min
+		round.Break = round_break
+		
+		net.Start( "z" )
+			net.WriteString( "respawn" )
+		net.SendToServer()
+		
+		if round.limit == 0 then
+			round.limit = rounds
+		else
+			round.limit = round.limit - 1
+		end
 	else
 		round.Break = round.Break - 1
 		net.Start( "z" )
-			net.WriteString( "un" )
+		net.WriteString( "un" )
 		net.SendToServer()
 	end
 	
-	if ende == false then
-	
-	round.Break = round_break
-	
-	round.sec = round.sec - 1
-	
-	net.Start( "z" )
+	if (ende == false) then
+		round.Break = round_break
+		round.sec = round.sec - 1
+		net.Start( "z" )
 		net.WriteString( "an" )
-	net.SendToServer()
+		net.SendToServer()
 	
-	if(round.sec < 0) then
-		round.sec = round_sec
-		round.TimeLeft = round.TimeLeft - 1
-	end
-	
+		if(round.sec < 0) then
+			round.sec = round_sec
+			round.TimeLeft = round.TimeLeft - 1
+		end
 	end
 	
 	if (round.TimeLeft == 0) then
