@@ -2,96 +2,108 @@ include("settings.lua")
 
 round = {}
 -- Variables
-round.Break	= round_break
+round.pause	= round_pause
 round.limit = rounds
 
 -- Read Variables
-round.TimeLeft = -1
+round.min = -1
 round.sec = round_sec
 
-local ende = false
+round.finish = false
 
-util.AddNetworkString( "TIMEPaint" )
+util.AddNetworkString( "PaintTimeLeft" )
+util.AddNetworkString( "PaintRoundsLeft" )
 
 function round.Begin()
-	round.TimeLeft = round_min-1
+	net.Start( "PaintRoundsLeft" ) 
+		net.WriteInt( round.limit, 8 )
+	net.Broadcast()
+	round.min = round_min
+end
+
+function round.Pause()
+	if (round.pause == 0) then
+		round.sec = round_sec
+		round.min = round_min
+		round.finish = false
+		for k, ply in pairs(player.GetAll()) do
+			ply:Freeze(false)
+		end
+	else
+		print(round.pause)
+		round.pause = round.pause - 1
+	end
 end
 
 function round.End()
-	local ply = LocalPlayer()
+
+	round.finish = true
+	round.limit = round.limit - 1
+
+	net.Start( "PaintRoundsLeft" ) 
+		net.WriteInt( round.limit, 8 )
+	net.Broadcast()
+
+
+	if round.limit == 0 then
+		for k, ply in pairs(player.GetAll()) do
+			ply:Freeze(true)
+		end
+		PrintMessage(3, "----GAME OVER----")
+	else
+		for k, ply in pairs(player.GetAll()) do
+			ply:SetFrags(0)
+			ply:SetDeaths(0)
+			ply:Freeze(true)
+		end
+
 		if team.TotalFrags(1) > team.TotalFrags(2) then
+
 			if endroundsound == true then
-			surface.PlaySound(t_sound)
+				surface.PlaySound(t_sound)
 			end
 		elseif team.TotalFrags(1) < team.TotalFrags(2) then
+
 			if endroundsound == true then
-			surface.PlaySound(c_sound)
+				surface.PlaySound(c_sound)
 			end
 		else 
+
 			if endroundsound == true then
-			surface.PlaySound(n_sound)
+				surface.PlaySound(n_sound)
 			end
 		end
-		ende = true
-		
-		if round.limit == 0 then
-		
-		end
-end
 
-function awards()
-	if ende == true then
-		draw.RoundedBox(2,0,ScrH()/2-150,ScrW(),300,Color(0,0,0,230))
+		PrintMessage(3, "----END OF ROUND----")
+		PrintMessage(3, "ROUNDS LEFT:  " .. round.limit)
+		print("--Pause--")
+		timer.Create("round.Pause", 1, round_pause+1, round.Pause)
 	end
 end
-
-hook.Add( "HUDPaint" , "awards", awards )
-
 
 function round.Handle()
+	if round.finish == false then
 
-	net.Start( "TIMEPaint" )
-    	net.WriteTable( {round.TimeLeft, round.sec} )
-	net.Broadcast()
-	print(round.sec)
+		-- send current round time to client HUD
+		net.Start( "PaintTimeLeft" ) 
+			net.WriteTable( {round.min, round.sec} )
+		net.Broadcast()
 
-	if (round.TimeLeft == -1) then
-		round.Begin()
-		return
-	end
-	
-	if (round.Break == 0) then -- Rundenpause zuende
-		ende = false
-		round.sec = round_sec
-		round.TimeLeft = round_min
-		round.Break = round_break
+		if (round.min == -1) then round.Begin() end 
+
+		print(round.min, round.sec)
 		
-		if round.limit == 0 then
-			round.limit = rounds
-		else
-			round.limit = round.limit - 1
-		end
-	else
-		round.Break = round.Break - 1
-	end
-	
-	if (ende == false) then
-		round.Break = round_break
-		round.sec = round.sec - 1
-	
-		if(round.sec < 0) then
-			round.sec = round_sec
-			round.TimeLeft = round.TimeLeft - 1
-		end
-	end
-	
-	if (round.TimeLeft == 0) then
-		if(round.sec == 0) then
-			if ende == false then
-				round.End()
+		if (round.min == 0 and round.sec == 0) then -- round is over
+			round.End()
+		else 										-- round is ongoing
+			round.pause = round_pause
+			round.sec = round.sec - 1
+		
+			if(round.sec < 0) then
+				round.sec = round_sec
+				round.min = round.min - 1
 			end
 		end
 	end
-	
 end
 timer.Create("round.Handle", 1, 0, round.Handle)

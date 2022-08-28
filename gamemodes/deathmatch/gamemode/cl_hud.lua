@@ -42,6 +42,7 @@ local killer = "Nothing"
 local HUDTopYPos = 0
 local min = 0
 local sec = 0
+local roundsLeft = 0;
 
 local triangleLeft = {
 	{ x = (ScrW()/2)-700, y = HUDTopYPos },
@@ -79,19 +80,15 @@ function weapon(data)
 end
 usermessage.Hook("weapon", weapon )
 
-net.Receive( "TIMEPaint", function(len, ply)
+net.Receive( "PaintTimeLeft", function(len, ply)
 	local temp = net.ReadTable()
 	min = temp[1]
 	sec = temp[2]
-end)
+end )
 
-function time()
-	draw.RoundedBox( 0, ScrW()/2-(155/2), HUDTopYPos, 155, 50, Color(0,0,0,200) )
-	if (sec < 10) then draw.SimpleText( min .. ":0" .. sec, "ScoreboardDefaultTitle", ScrW()/2, 50/2, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
-	else draw.SimpleText( min .. ":" .. sec, "ScoreboardDefaultTitle", ScrW()/2, 50/2, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
-	end
-end
-hook.Add( "HUDPaint" , "TIME", time )
+net.Receive( "PaintRoundsLeft", function(len, ply)
+	roundsLeft = net.ReadInt(8)
+end )
 	
 function HUD()
 	local ply = LocalPlayer()
@@ -115,6 +112,21 @@ function HUD()
 		team1Score = team2Score
 		team2Name = tempName
 		team2Score = tempScore
+	end
+
+	--Round Time--
+	draw.RoundedBox( 0, ScrW()/2-(155/2), HUDTopYPos, 155, 50, Color(0,0,0,200) )
+	if (sec < 10) then draw.SimpleText( min .. ":0" .. sec, "ScoreboardDefaultTitle", ScrW()/2, 50/2, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+	else draw.SimpleText( min .. ":" .. sec, "ScoreboardDefaultTitle", ScrW()/2, 50/2, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+	end
+	--Rounds Left--
+	if (showRoundsLeft) then
+		local roundname 
+		if roundsLeft == 1 then roundname = langroundone
+		else roundname = langround end
+		
+		draw.RoundedBox( 0, 0, ScrH()-50, 225, 50, Color(0,0,0,100) )
+		draw.SimpleText( roundname..": "..roundsLeft, "ScoreboardDefaultTitle", 225/2, ScrH()-50+(50/2), Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 	end
 
 	--Team Score Left--
@@ -163,16 +175,7 @@ function HUD()
 		end
 	end
 
-	if (false) then
-		--Rounds Remaining--
-		local roundname 
-			
-		if round.limit == 1 then roundname = langroundone
-		else roundname = langround end
-		
-		draw.RoundedBox( 0, 0, ScrH()-50, 225, 50, Color(0,0,0,100) )
-		draw.SimpleText( roundname..": "..round.limit, "ScoreboardDefaultTitle", 225/2, ScrH()-50+(50/2), Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
-	end
+	
 
 	function math.gcd(a,b) while a ~= 0 do a, b = b%a, a end return b end
 	
