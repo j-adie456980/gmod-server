@@ -1,82 +1,97 @@
-	include("round.lua")
-	include("shop.lua")
-	include("lang.lua")
-	include("settings.lua")
-	-- Add external font
-	resource.AddFile( "resource/fonts/battlefield.ttf" )
+include("round.lua")
+include("shop.lua")
+include("lang.lua")
+include("settings.lua")
+-- Add external font
+resource.AddFile( "resource/fonts/battlefield.ttf" )
 
-	-- Create Fonts
-	surface.CreateFont("BFont24", {
-		font = "Futura Light BT",
-		size = 24,
-		weight = 1000,
-		antialias = true,
-	})
+-- Create Fonts
+surface.CreateFont("BFont24", {
+	font = "Futura Light BT",
+	size = 24,
+	weight = 1000,
+	antialias = true,
+})
 
-	surface.CreateFont("BFont80", {
-		font = "Futura Light BT",
-		size = 80,
-		weight = 500,
-		antialias = true,
-	})
+surface.CreateFont("BFont80", {
+	font = "Futura Light BT",
+	size = 80,
+	weight = 500,
+	antialias = true,
+})
 
-	surface.CreateFont("BFont42", {
-		font = "Futura Light BT",
-		size = 42,
-		weight = 1000,
-		antialias = true,
-	})
+surface.CreateFont("BFont42", {
+	font = "Futura Light BT",
+	size = 42,
+	weight = 1000,
+	antialias = true,
+})
 
-	surface.CreateFont("BFont64", {
-		font = "Futura Light BT",
-		size = 64,
-		weight = 1000,
-		antialias = true,
-	})
+surface.CreateFont("BFont64", {
+	font = "Futura Light BT",
+	size = 64,
+	weight = 1000,
+	antialias = true,
+})
 
-	local hpSmooth = 0
-	local show_tip = 0
-	local item = "Nothing"
-	local spawnsec = 0
-	local killer = "Nothing"
-	local HUDTopYPos = 0
+local hpSmooth = 0
+local show_tip = 0
+local item = "Nothing"
+local spawnsec = 0
+local killer = "Nothing"
+local HUDTopYPos = 0
+local min = 0
+local sec = 0
 
-	local triangleLeft = {
-		{ x = (ScrW()/2)-700, y = HUDTopYPos },
-		{ x = (ScrW()/2)-624, y = HUDTopYPos },
-		{ x = (ScrW()/2)-624, y = HUDTopYPos+50 }
-	}
-	--any -1's make up for the additional mising pixel from placing an odd numbered width by a screen width / 2
-	local triangleRight = {
-		{ x = (ScrW()/2)+624-1, y = HUDTopYPos },
-		{ x = (ScrW()/2)+700, y = HUDTopYPos },
-		{ x = (ScrW()/2)+624-1, y = HUDTopYPos+50 },
-	}
+local triangleLeft = {
+	{ x = (ScrW()/2)-700, y = HUDTopYPos },
+	{ x = (ScrW()/2)-624, y = HUDTopYPos },
+	{ x = (ScrW()/2)-624, y = HUDTopYPos+50 }
+}
+--any -1's make up for the additional mising pixel from placing an odd numbered width by a screen width / 2
+local triangleRight = {
+	{ x = (ScrW()/2)+624-1, y = HUDTopYPos },
+	{ x = (ScrW()/2)+700, y = HUDTopYPos },
+	{ x = (ScrW()/2)+624-1, y = HUDTopYPos+50 },
+}
 
-	local trapezoidLeft = {
-		{ x = (ScrW()/2)-139, y = HUDTopYPos },
-		{ x = (ScrW()/2)-78, y = HUDTopYPos },
-		{ x = (ScrW()/2)-78, y = HUDTopYPos+50 },
-		{ x = (ScrW()/2)-139, y = HUDTopYPos+76 },
-	}
+local trapezoidLeft = {
+	{ x = (ScrW()/2)-139, y = HUDTopYPos },
+	{ x = (ScrW()/2)-78, y = HUDTopYPos },
+	{ x = (ScrW()/2)-78, y = HUDTopYPos+50 },
+	{ x = (ScrW()/2)-139, y = HUDTopYPos+76 },
+}
 
-	local trapezoidRight = {
-		{ x = (ScrW()/2)+78-1, y = HUDTopYPos },
-		{ x = (ScrW()/2)+139-1, y = HUDTopYPos },
-		{ x = (ScrW()/2)+139-1, y = HUDTopYPos+76 },
-		{ x = (ScrW()/2)+78-1, y = HUDTopYPos+50 },
-	}
-	
-	function killscreen(data)
-		killer = data:ReadString()
+local trapezoidRight = {
+	{ x = (ScrW()/2)+78-1, y = HUDTopYPos },
+	{ x = (ScrW()/2)+139-1, y = HUDTopYPos },
+	{ x = (ScrW()/2)+139-1, y = HUDTopYPos+76 },
+	{ x = (ScrW()/2)+78-1, y = HUDTopYPos+50 },
+}
+
+function killscreen(data)
+	killer = data:ReadString()
+end
+usermessage.Hook("killscreen", killscreen )
+
+function weapon(data)
+	item = data:ReadString()
+end
+usermessage.Hook("weapon", weapon )
+
+net.Receive( "TIMEPaint", function(len, ply)
+	local temp = net.ReadTable()
+	min = temp[1]
+	sec = temp[2]
+end)
+
+function time()
+	draw.RoundedBox( 0, ScrW()/2-(155/2), HUDTopYPos, 155, 50, Color(0,0,0,200) )
+	if (sec < 10) then draw.SimpleText( min .. ":0" .. sec, "ScoreboardDefaultTitle", ScrW()/2, 50/2, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+	else draw.SimpleText( min .. ":" .. sec, "ScoreboardDefaultTitle", ScrW()/2, 50/2, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 	end
-	usermessage.Hook("killscreen", killscreen )
-	
-	function weapon(data)
-		item = data:ReadString()
-	end
-	usermessage.Hook("weapon", weapon )
-	
+end
+hook.Add( "HUDPaint" , "TIME", time )
 	
 function HUD()
 	local ply = LocalPlayer()
@@ -92,6 +107,7 @@ function HUD()
 	local team2Name = team.GetName(2)
 	local team2Score = team.TotalFrags(2)
 
+	--flips team 2 to left of screen for players on team 2--
 	if (ply:Team() == 2) then
 		local tempName = team1Name
 		local tempScore = team1Score
@@ -285,6 +301,7 @@ function HUD()
 
 	end
 end
+hook.Add( "HUDPaint" , "HUD", HUD )
 
 -- Hides the default Hud
 function hidehud(name)
@@ -295,19 +312,6 @@ function hidehud(name)
 	end
 end
 hook.Add("HUDShouldDraw", "HideOurHud", hidehud)
-hook.Add( "HUDPaint" , "HUD", HUD )
-
-function time()
-	local min = round.TimeLeft
-	local sec = round.sec
-	
-	draw.RoundedBox( 0, ScrW()/2-(155/2), HUDTopYPos, 155, 50, Color(0,0,0,200) )
-	if (sec < 10) then draw.SimpleText( min .. ":0" .. sec, "ScoreboardDefaultTitle", ScrW()/2, 50/2, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
-	else draw.SimpleText( min .. ":" .. sec, "ScoreboardDefaultTitle", ScrW()/2, 50/2, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
-	end
-	
-end
-hook.Add( "HUDPaint" , "TIME", time )
 
 function wep()
 	
