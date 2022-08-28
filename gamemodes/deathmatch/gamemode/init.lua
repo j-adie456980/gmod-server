@@ -32,7 +32,7 @@ local model_team1 = modelList[1]
 
 local model_team2 = modelList[2]
 
-
+util.AddNetworkString( "PlayerJoinedMsg" )
 
 function GM:PlayerInitialSpawn( ply )
 	ply:KillSilent()
@@ -40,7 +40,7 @@ function GM:PlayerInitialSpawn( ply )
 	ply:Freeze(true)
 	ply:Spectate( OBS_MODE_ROAMING )
    	ply:SpectateEntity( ent )
-	umsg.Start("SelectTeamMenu")
+	umsg.Start("SelectTeamMenu", ply)
 	umsg.End()
 end
 
@@ -218,16 +218,15 @@ net.Receive( "team", function(len, ply)
 	local teamselect = net.ReadString()
 	if teamselect == "1" then
 		ply:SetTeam(1)
-		PrintMessage( HUD_PRINTTALK, "[Team]"..ply:Name()..jointeam1)
-		ply:KillSilent()
-		ply:Spawn()
 	else
 		ply:SetTeam(2)
-		PrintMessage( HUD_PRINTTALK, "[Team]"..ply:Name()..jointeam2)
-		ply:KillSilent()
-		ply:Spawn()
 	end
-	
+	net.Start( "PlayerJoinedMsg" )
+		net.WriteInt(ply:Team(), 8)
+		net.WriteTable( ply:GetPlayerInfo() )
+	net.Broadcast()
+	ply:KillSilent()
+	ply:Spawn()
 end )
 
 util.AddNetworkString("z")
