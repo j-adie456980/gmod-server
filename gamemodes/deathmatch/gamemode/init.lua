@@ -10,11 +10,14 @@ AddCSLuaFile( "addonLists.lua" )
 AddCSLuaFile( "selectTeamMenu.lua" )
 AddCSLuaFile( "selectWeaponMenu.lua" )
 AddCSLuaFile( "help.lua" )
+AddCSLuaFile( "sv_helpers.lua" )
 
 include( "settings.lua" )
+include( "sv_roundSystem.lua" )
 include( "shared.lua" )
 include( "lang.lua")
 include( "addonLists.lua" )
+include( "sv_helpers.lua" )
 
 resource.AddFile(c_sound)
 resource.AddFile(t_sound)
@@ -29,11 +32,7 @@ local model_team1 = modelList[1]
 
 local model_team2 = modelList[2]
 
-hook.Add( "KeyPress", "keypress_use_hi", function( ply, key )
-	if ( key == IN_USE ) then
-		print( "hi" )
-	end
-end )
+
 
 function GM:PlayerInitialSpawn( ply )
 	ply:KillSilent()
@@ -51,7 +50,9 @@ function GM:PlayerSpawn( ply )
 	
 	ply:AllowFlashlight(true)
 	
-	print(ply:Team())
+	print("--PlayerSpawn--")
+	print("Team Num: ", ply:Team())
+	print("Team Name: ", team.GetName(ply:Team()))
 
 	if ply:Team() == 4 then
 		ply:GodEnable()
@@ -96,6 +97,12 @@ function GM:PlayerSpawn( ply )
 	end
 	end
 	end
+end
+
+function GM:ShowHelp( ply )
+	--PrintTable(team.GetClass(1))
+	--print(ply)
+	print(team_name_1, team_name_2)
 end
 
 function GM:ShowSpare2( ply )
@@ -254,6 +261,7 @@ net.Receive( "z", function(len, ply)
 		end
 	elseif z == "spawn" then
 		ply:Spawn()
+		print("CLIENT CALL TO SERVER - Z SPAWN")
 	elseif z == "un" then
 		ply:Freeze(true)
 	elseif z == "an" then
