@@ -160,8 +160,3 @@ function SetCurrentLoadOut(Player, primary, secondary, melee)
     --Player:Give(currentMelee)
     Player:Give("weapon_frag")
 end
-
-function dumbShit()
-    print("-----------dumbShiz-------------")
-    
-end
