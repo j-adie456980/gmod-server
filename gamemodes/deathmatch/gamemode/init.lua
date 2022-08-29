@@ -40,6 +40,7 @@ function GM:PlayerInitialSpawn( ply )
 	ply:Freeze(true)
 	ply:Spectate( OBS_MODE_ROAMING )
    	ply:SpectateEntity( ent )
+	InitializeLoadOut(ply)
 	umsg.Start("SelectTeamMenu", ply)
 	umsg.End()
 end
@@ -74,14 +75,14 @@ function GM:PlayerSpawn( ply )
 		ply:SetModel(model_team1)
 		ply:GiveAmmo(64, "Pistol", true)
 		ply:SetArmor(100)
-		SetCurrentLoadOut(ply)
+		GetCurrentLoadOut(ply)
 		
 	elseif ply:Team() == 2 then
 		ply:SetTeam(2)
 		ply:SetModel(model_team2)
 		ply:GiveAmmo(64, "Pistol", true)
 		ply:SetArmor(100)
-		SetCurrentLoadOut(ply)
+		GetCurrentLoadOut(ply)
 	end
 	ply:SetupHands()
 	end

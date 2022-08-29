@@ -124,39 +124,9 @@ function initializeWeps()
     
 end
 
-
---ADD NEW WEAPONS TO NAME LIST HERE--
---AR = { "AKM", "AR15", "HK417", "AUG", "MK18" }
---SMG = { "MP5", "MP9" ,"MP40" }
---SHOTGUN = { "M870", "BR99", "KSG", "FORT500", "M1014", "TOZ194", "M590" }
---SNIPER = { "KAR98" , "RFB", "MOSIN", "SKS" }
---PISTOL = { "M9", "GLOCK", "P99", "M712", "TOKAREV", "FNP45", "MK23", "COBRA", "QSZ" }
---MELEE = { "Knife", "Machete" }
-
 PRIMARYCLASSES = { 'AR', 'SMG', 'SHOTGUN', 'SNIPER'}
 
 currentPrimaryClass = PRIMARYCLASSES[1]
 currentPrimary = weaponList.AR[1]
 currentSecondary = weaponList.PISTOL[1]
 currentMelee = weaponList.MELEE[1]
-
-function SetCurrentLoadOut(Player, primary, secondary, melee)
-    Player:RemoveAllItems()
-    if (primary == nil) then Player:Give(currentPrimary)
-    else 
-        Player:Give(primary)
-        currentPrimary = primary
-    end
-    if (secondary == nil) then Player:Give(currentSecondary)
-    else 
-        Player:Give(secondary)
-        currentSecondary = secondary
-    end
-    if (melee == nil) then Player:Give(currentMelee)
-    else 
-        Player:Give(melee)
-        currentMelee = melee
-    end
-    --Player:Give(currentMelee)
-    Player:Give("weapon_frag")
-end
