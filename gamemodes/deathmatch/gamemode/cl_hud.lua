@@ -84,6 +84,7 @@ net.Receive( "PaintTimeLeft", function(len, ply)
 	local temp = net.ReadTable()
 	min = temp[1]
 	sec = temp[2]
+	roundsLeft = temp[3]
 end )
 
 net.Receive( "PaintRoundsLeft", function(len, ply)

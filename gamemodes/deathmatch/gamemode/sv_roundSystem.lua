@@ -14,6 +14,10 @@ round.finish = false
 util.AddNetworkString( "PaintTimeLeft" )
 util.AddNetworkString( "PaintRoundsLeft" )
 
+for k, ply in pairs(player.GetAll()) do
+	ply:Freeze(false)
+end
+
 function round.Begin()
 	net.Start( "PaintRoundsLeft" ) 
 		net.WriteInt( round.limit, 8 )
@@ -86,7 +90,7 @@ function round.Handle()
 
 		-- send current round time to client HUD
 		net.Start( "PaintTimeLeft" ) 
-			net.WriteTable( {round.min, round.sec} )
+			net.WriteTable( {round.min, round.sec, round.limit} ) --limit included for client-side rendering that takes place post Begin()
 		net.Broadcast()
 
 		if (round.min == -1) then round.Begin() end 
