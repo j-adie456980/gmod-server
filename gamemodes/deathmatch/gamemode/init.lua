@@ -1,7 +1,6 @@
 AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "shared.lua" )
 AddCSLuaFile( "cl_hud.lua" )
-AddCSLuaFile( "round.lua" )
 AddCSLuaFile( "shop.lua" )
 AddCSLuaFile( "lang.lua" )
 AddCSLuaFile( "settings.lua" )
