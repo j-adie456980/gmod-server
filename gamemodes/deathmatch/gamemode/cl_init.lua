@@ -8,7 +8,6 @@ include( "selectTeamMenu.lua" )
 include( "selectWeaponMenu.lua" )
 include( "help.lua" )
 include( "addonLists.lua" )
-include( "sv_helpers.lua" )
 
 net.Receive( "PlayerJoinedMsg", function(len, ply)
     local teamNum = net.ReadInt(8)
