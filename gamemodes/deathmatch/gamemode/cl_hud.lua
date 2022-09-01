@@ -4,6 +4,9 @@ include("lang.lua")
 include("settings.lua")
 -- Add external font
 resource.AddFile( "resource/fonts/battlefield.ttf" )
+resource.AddFile( "resource/fonts/futura.ttf" )
+resource.AddFile( "materials/armor_shield.png" )
+resource.AddFile( "materials/health_cross.png" )
 
 -- Create Fonts
 surface.CreateFont("BFont24", {
@@ -42,7 +45,9 @@ local killer = "Nothing"
 local HUDTopYPos = 0
 local min = 0
 local sec = 0
-local roundsLeft = 0;
+local roundsLeft = 0
+local HUDShield = Material("armor_shield.png")
+local HUDCross = Material("health_cross.png")
 
 local triangleLeft = {
 	{ x = (ScrW()/2)-700, y = HUDTopYPos },
@@ -256,7 +261,7 @@ function HUD()
 		-- Health Cross
 		barW, barH = (w / 2.2) * d_scale, (h / 9.5) * d_scale
 
-		surface.SetMaterial(Material("materials/health_cross.png"))
+		surface.SetMaterial(HUDCross)
 		surface.DrawTexturedRect(x - barW / 2, y * 1.9 - barH, (h / 15) * d_scale, (h / 15) * d_scale)
 
 		-- Divider
@@ -281,7 +286,7 @@ function HUD()
 
 		barW, barH = (w / 3.1) * d_scale + txtSize, (h / 8) * d_scale
 
-		surface.SetMaterial(Material("materials/armor_shield.png"))
+		surface.SetMaterial(HUDShield)
 		surface.DrawTexturedRect(x - barW, y * 1.9 - barH, (h / 10) * d_scale, (h / 10) * d_scale)
 
 		-- Ammo Text
